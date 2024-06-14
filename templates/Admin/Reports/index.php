@@ -51,6 +51,7 @@ use CakeLteTools\Utility\FaIcon;
                         <div class="row">
                             <div class="col">
                                 <?= $this->Form->control('stage', ['label' => __('Etapa'), 'empty' => __('--Todos--'), 'options' => StageField::toListLabel()]) ?>
+                                <?= $this->Form->control('stage', ['label' => __('Fase'), 'empty' => __('--Todos--'), 'options' => StageField::toListLabel()]) ?>
                             </div>
                         </div>
                         <div class="row">
@@ -58,16 +59,44 @@ use CakeLteTools\Utility\FaIcon;
                                 <?= $this->Form->control('lapse_id', ['label' => __('Lapso'), 'empty' => __('--Todos--')]) ?>
                             </div>
                         </div>
-
-                        <?= $this->Form->control('dni_order', ['label' => __('Ordenar por DNI'), 'options' => ['asc' => 'ASC', 'desc' => 'DESC'], 'empty' => true]) ?>
-
-                        <?= $this->Button->search() ?>
+                        <div class="row">
+                            <div class="col">
+                                <?= $this->Button->search() ?>
+                            </div>
+                        </div>
+                        
                     </div>
                     <?= $this->Form->end() ?>
                 </div>
             </div>
             <!-- End Collapse Filters -->
         </div>
+
+        <div class="row">
+            <!-- Collapse Show Fields -->
+            <div class="card text-black w-100" style="max-width: 18rem;">
+                <?= $this->Form->create(null, ['type' => 'GET', 'valueSources' => ['query', 'context']]) ?>
+                <div class="card-header card-warning card-outline ">
+                    <h4>
+                        <span class="d-flex w-100" data-toggle="collapse" href="#collapse-fields">
+                            <?= __('Ordenar') ?>
+                            <i class="icon-caret fas fa-caret-up ml-auto fa-fw"></i>
+                        </span>
+                    </h4>
+                </div>
+                <div class="card-body collapse hidden" id="collapse-fields">
+                        <?= $this->Form->control('dni_order', ['label' => __('Cedula'), 'options' => ['asc' => 'ASC', 'desc' => 'DESC'], 'empty' => _('--Seleccionar--')]) ?>
+                        <?= $this->Form->control('area_order', ['label' => __('Area'), 'options' => ['asc' => 'ASC', 'desc' => 'DESC'], 'empty' => _('--Seleccionar--')]) ?>
+                        <?= $this->Form->control('program_order', ['label' => __('Programa'), 'options' => ['asc' => 'ASC', 'desc' => 'DESC'], 'empty' => _('--Seleccionar--')]) ?>
+                        <?= $this->Form->control('firstname_order', ['label' => __('Nombre'), 'options' => ['asc' => 'ASC', 'desc' => 'DESC'], 'empty' => _('--Seleccionar--')]) ?>
+                        <?= $this->Form->control('lastname_order', ['label' => __('Apellido'), 'options' => ['asc' => 'ASC', 'desc' => 'DESC'], 'empty' => _('--Seleccionar--')]) ?>
+                        <?= $this->Button->search() ?>
+                    </div>
+                    <?= $this->Form->end() ?>
+                </div>
+            <!-- End Collapse Show Fields -->
+        </div>
+
 
         <div class="row">
             <!-- Collapse Show Fields -->
@@ -158,6 +187,31 @@ use CakeLteTools\Utility\FaIcon;
                                 <td><?= $this->App->nan(); ?></td>
                                 <td><?= $this->App->nan(); ?></td>
                             <?php } ?>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <?php
+                    //Debug | Remove on deployed
+                    //dd($results->toArray());  
+                    ?>
+                    <?php foreach ($results as $result) : ?>
+                        <tr>
+                            <td><?= h($result->student->tenant->program->area_label) ?? $this->App->nan() ?></td>
+                            <td><?= $result->student->tenant->program->name ?></td>
+                            <td><?= $result->student->dni ?></td>
+                            <td><?= $result->student->first_name ?></td>
+                            <td><?= $result->student->last_name ?></td>
+                            <td><?= $result->student->lapse->label  ?></td>
+                            <td><?= $result->status_label ?></td>
+                            <td><?= $result->stage_label ?></td>
+                            <td><?= $result->student->tenant->label ?></td>
+
+                            <!-- The adscriptions is an Array Object -->
+                            <?php foreach ($result->student->student_adscriptions as $adscription) : ?>
+                                <td><?= $adscription->institution_project->name ?></td>
+                                <td><?= $adscription->tutor->name ?></td>
+                            <?php endforeach; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
