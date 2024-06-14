@@ -177,6 +177,16 @@ class StudentStagesTable extends Table
             },
         ]);
 
+        $this->addFilterField('dni_order', [
+            'finder' => function (Query $query, array $options) {
+                if ($options['value'] === 'asc') {
+                    return $query->orderAsc('AppUsers.dni');
+                }
+
+                return $query->orderDesc('AppUsers.dni');
+            },
+        ]);
+
         $this->addFilterField('stage', [
             'tableField' => 'stage',
             'finder' => 'stageFilter',
@@ -212,7 +222,6 @@ class StudentStagesTable extends Table
             'finder' => 'order',
         ]);
     }
-
     /**
      * @param \Cake\ORM\Query $query
      * @param array $options

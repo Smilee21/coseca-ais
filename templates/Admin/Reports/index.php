@@ -50,6 +50,7 @@ use CakeLteTools\Utility\FaIcon;
                         </div>
                         <div class="row">
                             <div class="col">
+                                <?= $this->Form->control('stage', ['label' => __('Etapa'), 'empty' => __('--Todos--'), 'options' => StageField::toListLabel()]) ?>
                                 <?= $this->Form->control('stage', ['label' => __('Fase'), 'empty' => __('--Todos--'), 'options' => StageField::toListLabel()]) ?>
                             </div>
                         </div>
@@ -114,7 +115,6 @@ use CakeLteTools\Utility\FaIcon;
             </div>
             <!-- End Collapse Show Fields -->
         </div>
-
         <div class="row">
             <!-- Collapse Wrap -->
             <div class="card text-black w-100" style="max-width: 18rem;">
@@ -158,7 +158,35 @@ use CakeLteTools\Utility\FaIcon;
                         <th><?= _('Institución') ?></th>
                         <th><?= _('Proyecto') ?></th>
                         <th><?= _('Tutor') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($results as $result) : ?>
+                        <tr>
+                            <td><?= h($result->student->tenant->program->area_label) ?? $this->App->nan() ?></td>
+                            <td><?= h($result->student->tenant->program->name) ?></td>
+                            <td><?= h($result->student->dni) ?></td>
+                            <td><?= h($result->student->first_name) ?></td>
+                            <td><?= h($result->student->last_name) ?></td>
+                            <td><?= h($result->student->lapse->label) ?? $this->App->nan()  ?></td>
+                            <td><?= $this->App->badge($result->student->last_stage->enum('status')) ?></td>
+                            <td><?= h($result->stage_label) ?></td>
+                            <td><?= h($result->student->tenant->label) ?></td>
 
+                            <!-- The adscriptions is an Array Object -->
+                            <?php if (!empty($result->student->student_adscriptions)) {
+                                foreach ($result->student->student_adscriptions as $adscription) { ?>
+                                    <!-- Only Main Project -->
+                                    <?php if ($adscription->principal) { ?>
+                                        <td><?= h($adscription->institution_project->name) ?></td>
+                                        <td><?= h($adscription->tutor->name) ?></td>
+                                <?php       }
+                                }
+                            } else { ?>
+                                <!-- No Project -->
+                                <td><?= $this->App->nan(); ?></td>
+                                <td><?= $this->App->nan(); ?></td>
+                            <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -191,5 +219,4 @@ use CakeLteTools\Utility\FaIcon;
         </div>
     </div>
     <!-- End Table of Reports -->
-
 </div>
